@@ -9,6 +9,7 @@
         <module>notification-service</module>
         <module>player-request</module>
         <module>team-request</module>
+        <module>api-gateway</module>
     </modules>
 
     <parent>
