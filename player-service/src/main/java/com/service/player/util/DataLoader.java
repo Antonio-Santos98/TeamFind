@@ -1,7 +1,7 @@
-package player.util;
+package com.service.player.util;
 
-import player.model.Player;
-import player.repo.PlayerRepo;
+import com.service.player.model.Player;
+import com.service.player.repo.PlayerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

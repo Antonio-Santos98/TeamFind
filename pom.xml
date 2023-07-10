@@ -10,6 +10,8 @@
         <module>player-request</module>
         <module>team-request</module>
         <module>api-gateway</module>
+        <module>player-service</module>
+        <module>team-service</module>
     </modules>
 
     <parent>

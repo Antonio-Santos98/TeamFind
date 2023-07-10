@@ -1,4 +1,4 @@
-package player.model;
+package com.service.player.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
