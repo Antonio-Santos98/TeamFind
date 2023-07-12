@@ -1,6 +1,5 @@
 package com.service.team.service;
 
-import com.service.team.model.PlayerSummary;
 import com.service.team.model.Team;
 import com.service.team.repo.TeamRepo;
 import lombok.RequiredArgsConstructor;

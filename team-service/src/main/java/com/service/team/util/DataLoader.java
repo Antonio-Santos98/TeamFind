@@ -39,7 +39,6 @@ public class DataLoader implements CommandLineRunner {
 
         Team team1 = new Team();
         team1.setTeamName("Vitality");
-        team1.setNeedPlayers(false);
         team1.setPlayersNeeded(0);
         team1.setStanding("11-1");
         team1.setPlayerList(vitList);
