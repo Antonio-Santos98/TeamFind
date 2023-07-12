@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TeamService {
+
     private final TeamRepo teamRepo;
 
     public List<Team> getAllTeams(){
@@ -25,8 +26,7 @@ public class TeamService {
         return teamRepo.save(team);
     }
 
-
-    public boolean deleteTeam(String teamId) {
+    public boolean deleteTeam(Long teamId) {
         Team existingTeam = teamRepo.findById(teamId).orElse(null);
         if (existingTeam != null) {
             teamRepo.delete(existingTeam);

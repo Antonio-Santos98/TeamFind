@@ -1,20 +1,19 @@
 package com.service.team.model;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 
 @Data
-@Getter
-@Setter
+@Table(name = "player_summary")
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class PlayerSummary {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String userId;
+    private Long userId;
     private String userName;
     private String role;
 
