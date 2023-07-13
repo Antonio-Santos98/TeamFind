@@ -44,5 +44,22 @@ public class DataLoader implements CommandLineRunner {
         team1.setPlayerList(vitList);
 
         teamRepo.save(team1);
+
+        PlayerSummary tone = new PlayerSummary();
+        tone.setRole("Rifler");
+        tone.setUserName("Tone");
+        PlayerSummary jawn = new PlayerSummary();
+        jawn.setRole("IGL");
+        jawn.setUserName("Jawn");
+
+        List<PlayerSummary> test = new ArrayList<>(Arrays.asList(tone, jawn));
+
+        Team team2 = new Team();
+        team2.setTeamName("TestTeam");
+        team2.setPlayersNeeded(4);
+        team2.setStanding("5-5");
+        team2.setPlayerList(test);
+
+        teamRepo.save(team2);
     }
 }

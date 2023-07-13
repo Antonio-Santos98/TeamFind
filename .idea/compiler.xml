@@ -11,10 +11,10 @@
         <module name="discovery-server" />
         <module name="player-service" />
         <module name="team-service" />
-        <module name="notification-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="notification-service" target="16" />
       <module name="player-request" target="16" />
       <module name="team-request" target="16" />
     </bytecodeTargetLevel>

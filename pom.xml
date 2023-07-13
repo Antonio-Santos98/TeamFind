@@ -6,7 +6,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>discovery-server</module>
-        <module>notification-service</module>
         <module>api-gateway</module>
         <module>player-service</module>
         <module>team-service</module>

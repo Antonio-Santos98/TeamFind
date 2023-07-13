@@ -1,5 +1,6 @@
 package com.service.team.model;
 
+import com.service.team.events.TeamRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,4 +21,8 @@ public class Team {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<PlayerSummary> playerList;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "playerRequest")
+    private List<TeamRequest> teamRequest;
 }

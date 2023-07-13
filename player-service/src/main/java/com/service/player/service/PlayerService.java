@@ -32,16 +32,21 @@ public class PlayerService {
         return playerRepo.save(newPlayer);
     }
 
-    public Player requestTeam(Player player){
-        Player requestee = playerRepo.findByUserName(player.getUserName());
-        TeamRequest newRequest = new TeamRequest();
-        newRequest.setUserId(requestee.getUserId());
-        newRequest.setUserName(requestee.getUserName());
-        newRequest.setRole(requestee.getPreferredRole());
+    public String requestTeam(Player player, Long teamId){
+        try {
+            Player requestee = playerRepo.findByUserName(player.getUserName());
+            TeamRequest newRequest = new TeamRequest();
+            newRequest.setUserId(requestee.getUserId());
+            newRequest.setUserName(requestee.getUserName());
+            newRequest.setRole(requestee.getPreferredRole());
+            newRequest.setTeamId(teamId);
+            kafkaTemplate.send("teamRequest", newRequest);
 
-        kafkaTemplate.send("requestTeam", newRequest.getUserId(),newRequest);
-
-        return requestee;
+            return "Request Sent!";
+        }
+        catch(RuntimeException ex){
+            return "Request Already been sent to Team!";
+        }
     }
 
 }

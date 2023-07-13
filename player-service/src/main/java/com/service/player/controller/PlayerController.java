@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/player")
@@ -22,13 +23,9 @@ public class PlayerController {
         return ResponseEntity.ok(players);
     }
 
-    @PostMapping("/request/{userId}")
-    public ResponseEntity<Player> playerTeamRequest(Player player, @PathVariable Player userId){
-        Player requestee = playerService.findPlayerUser(player.getUserName());
-        userId = playerService.findById(player.getUserId());
-        System.out.println(userId);
-
-
-        return ResponseEntity.ok(playerService.requestTeam(requestee));
+    @PostMapping("/request/{userId}/{teamId}")
+    public CompletableFuture<String> playerTeamRequest(@PathVariable Long userId, @PathVariable Long teamId){
+        Player requestee = playerService.findById(userId);
+        return CompletableFuture.supplyAsync(() -> playerService.requestTeam(requestee, teamId));
     }
 }
