@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TeamResponse {
     private Boolean response;
+    private TeamRequest teamRequest;
 }

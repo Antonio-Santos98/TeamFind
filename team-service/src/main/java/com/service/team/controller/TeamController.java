@@ -6,6 +6,7 @@ import com.service.team.service.TeamService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,8 @@ public class TeamController {
     }
 
     @PostMapping("/{response}")
-    public void requestResponse(@PathVariable Boolean response){
-        teamService.interactedRequest(response);
+    public void requestResponse(@PathVariable Boolean response, @RequestBody TeamRequest teamRequest){
+        teamService.interactedRequest(response, teamRequest);
     }
 
 
