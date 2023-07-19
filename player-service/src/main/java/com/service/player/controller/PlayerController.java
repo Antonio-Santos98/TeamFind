@@ -1,6 +1,5 @@
 package com.service.player.controller;
 
-import com.service.player.events.TeamRequest;
 import com.service.player.events.TeamResponse;
 import com.service.player.model.Player;
 import com.service.player.model.Team;
@@ -46,7 +45,7 @@ public class PlayerController {
     public ResponseEntity<String> createPlayer(@RequestBody Player player){
         player.setUserName(player.getUserName());
         player.setPreferredRole(player.getPreferredRole());
-        player.setRank(player.getRank());
+        player.setPlayerRank(player.getPlayerRank());
         player.setRating(player.getRating());
         return ResponseEntity.ok(playerService.createPlayer(player));
     }

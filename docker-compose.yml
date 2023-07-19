@@ -1,5 +1,5 @@
 ---
-version: '3'
+version: '3.7'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.0
@@ -24,3 +24,119 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  ## Keycloak Config with Mysql database
+  keycloak-mysql:
+    container_name: keycloak-mysql
+    image: mysql:5.7
+    volumes:
+      - ./mysql_keycloak_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:18.0.0
+    command: [ "start-dev", "--import-realm" ]
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./realms/:/opt/keycloak/data/import/
+    depends_on:
+      - keycloak-mysql
+
+  ## Zipkin
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+
+  ## Eureka Server
+  discovery-server:
+    image: stonetone/discovery-server:latest
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - zipkin
+
+  #MySQL for Player Service
+  mySQL-player:
+    container_name: mySQL-player
+    image: mysql
+    environment:
+      MYSQL_DATABASE: player-service
+      MYSQL_ROOT_PASSWORD: 1234
+    ports:
+      - "3307:3306"
+    volumes:
+    - ./mysql_data_player:/var/lib/mysql
+
+    #MySQL for Team Service
+  mySQL-team:
+    container_name: mySQL-team
+    image: mysql
+    environment:
+      MYSQL_DATABASE: team-service
+      MYSQL_ROOT_PASSWORD: 1234
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./mysql_data_team:/var/lib/mysql
+
+  ## GateWay
+  api-gateway:
+    build:
+      context: /api-gateway
+    container_name: api-gateway
+    ports:
+      - "8181:8080"
+    expose:
+      - "8181"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
+    depends_on:
+      - zipkin
+      - discovery-server
+      - keycloak
+
+  team-service:
+    container_name: team-service
+    image: stonetone/team-service:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mySQL-team:3306/team-service
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - zipkin
+      - broker
+      - mySQL-team
+
+  player-service:
+    container_name: player-service
+    image: stonetone/player-service:latest
+    environment:
+     - SPRING_PROFILES_ACTIVE=docker
+     - SPRING_DATASOURCE_URL=jdbc:mysql://mySQL-player:3306/player-service
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - zipkin
+      - broker
+      - mySQL-player

@@ -19,6 +19,6 @@ public class Player {
     private String userName;
     private String preferredRole;
     private Integer rating;
-    private String rank;
+    private String playerRank;
     private Long teamId;
 }
