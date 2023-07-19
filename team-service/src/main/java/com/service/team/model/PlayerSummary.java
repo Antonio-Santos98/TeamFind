@@ -12,7 +12,6 @@ import javax.persistence.*;
 public class PlayerSummary {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
     private String userName;
     private String role;

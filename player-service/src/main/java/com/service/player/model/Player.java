@@ -1,5 +1,6 @@
 package com.service.player.model;
 
+
 import lombok.*;
 
 import javax.persistence.Entity;

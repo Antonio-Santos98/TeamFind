@@ -1,8 +1,10 @@
-package com.service.team.model;
+package com.service.player.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.service.team.events.TeamRequest;
-import lombok.*;
+import com.service.player.events.TeamRequest;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,8 +12,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "team")
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +20,9 @@ public class Team {
     private String standing;
     private Integer playersNeeded;
 
-    @OneToMany
-    private List<PlayerSummary> playerList;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Player> playerList;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "team")
-    @JsonIgnoreProperties("team")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", fetch = FetchType.EAGER)
     private List<TeamRequest> teamRequest;
 }

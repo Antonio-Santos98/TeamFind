@@ -19,21 +19,24 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args){
-        PlayerSummary tone = new PlayerSummary();
-        tone.setRole("Rifler");
-        tone.setUserName("Tone");
-        PlayerSummary jawn = new PlayerSummary();
-        jawn.setRole("IGL");
-        jawn.setUserName("Jawn");
 
-        List<PlayerSummary> test = new ArrayList<>(Arrays.asList(tone, jawn));
+        Team team1 = new Team();
+        team1.setTeamName("TestTeam");
+        team1.setPlayersNeeded(4);
+        team1.setStanding("5-5");
 
         Team team2 = new Team();
-        team2.setTeamName("TestTeam");
-        team2.setPlayersNeeded(4);
-        team2.setStanding("5-5");
-        team2.setPlayerList(test);
+        team2.setTeamName("ShreeSports");
+        team2.setPlayersNeeded(5);
+        team2.setStanding("1-4");
 
+        Team team3 = new Team();
+        team3.setTeamName("FaZe");
+        team3.setPlayersNeeded(0);
+        team3.setStanding("15-0");
+
+        teamRepo.save(team1);
         teamRepo.save(team2);
+        teamRepo.save(team3);
     }
 }
