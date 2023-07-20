@@ -100,9 +100,9 @@ services:
 
   ## GateWay
   api-gateway:
+    container_name: api-gateway
     build:
       context: /api-gateway
-    container_name: api-gateway
     ports:
       - "8181:8080"
     expose:
@@ -117,7 +117,8 @@ services:
 
   team-service:
     container_name: team-service
-    image: stonetone/team-service:latest
+    build:
+      context: /team-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:mysql://mySQL-team:3306/team-service
@@ -130,7 +131,8 @@ services:
 
   player-service:
     container_name: player-service
-    image: stonetone/player-service:latest
+    build:
+      context: /player-service
     environment:
      - SPRING_PROFILES_ACTIVE=docker
      - SPRING_DATASOURCE_URL=jdbc:mysql://mySQL-player:3306/player-service
