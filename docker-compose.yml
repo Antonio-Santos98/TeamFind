@@ -1,29 +1,35 @@
 ---
-version: '3.7'
+version: '3'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.0
+    image: confluentinc/cp-zookeeper:6.2.1
     hostname: zookeeper
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - service
 
   broker:
-    image: confluentinc/cp-kafka:7.3.0
+    image: confluentinc/cp-kafka:6.2.1
     container_name: broker
+    hostname: broker
     ports:
       - "9092:9092"
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_HOST_NAME: broker
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    networks:
+      - service
 
   ## Keycloak Config with Mysql database
   keycloak-mysql:
@@ -36,6 +42,8 @@ services:
       MYSQL_DATABASE: keycloak
       MYSQL_USER: keycloak
       MYSQL_PASSWORD: password
+    networks:
+      - service
 
   keycloak:
     container_name: keycloak
@@ -55,6 +63,8 @@ services:
       - ./realms/:/opt/keycloak/data/import/
     depends_on:
       - keycloak-mysql
+    networks:
+      - service
 
   ## Zipkin
   zipkin:
@@ -62,6 +72,8 @@ services:
     container_name: zipkin
     ports:
       - "9411:9411"
+    networks:
+      - service
 
   ## Eureka Server
   discovery-server:
@@ -71,13 +83,17 @@ services:
       - "8761:8761"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING.ZIPKIN.BASE-URL=http://zipkin:9411/
     depends_on:
       - zipkin
+    networks:
+      - service
 
   #MySQL for Player Service
   mySQL-player:
     container_name: mySQL-player
     image: mysql
+    hostname: mySQLplayer
     environment:
       MYSQL_DATABASE: player-service
       MYSQL_ROOT_PASSWORD: 1234
@@ -85,11 +101,14 @@ services:
       - "3307:3306"
     volumes:
     - ./mysql_data_player:/var/lib/mysql
+    networks:
+      - service
 
     #MySQL for Team Service
   mySQL-team:
     container_name: mySQL-team
     image: mysql
+    hostname: mySQLteam
     environment:
       MYSQL_DATABASE: team-service
       MYSQL_ROOT_PASSWORD: 1234
@@ -97,6 +116,8 @@ services:
       - "3308:3306"
     volumes:
       - ./mysql_data_team:/var/lib/mysql
+    networks:
+      - service
 
   ## GateWay
   api-gateway:
@@ -110,10 +131,13 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
+      - SPRING.ZIPKIN.BASE-URL=http://zipkin:9411/
     depends_on:
-      - zipkin
-      - discovery-server
       - keycloak
+      - discovery-server
+      - zipkin
+    networks:
+      - service
 
   team-service:
     container_name: team-service
@@ -122,23 +146,34 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:mysql://mySQL-team:3306/team-service
+      - SPRING.ZIPKIN.BASE-URL=http://zipkin:9411/
     depends_on:
       - discovery-server
       - api-gateway
-      - zipkin
-      - broker
       - mySQL-team
+      - broker
+      - zipkin
+    networks:
+      - service
 
   player-service:
     container_name: player-service
     build:
       context: /player-service
+      dockerfile: Dockerfile
     environment:
-     - SPRING_PROFILES_ACTIVE=docker
-     - SPRING_DATASOURCE_URL=jdbc:mysql://mySQL-player:3306/player-service
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mySQL-player:3306/player-service
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411/
     depends_on:
       - discovery-server
       - api-gateway
-      - zipkin
-      - broker
       - mySQL-player
+      - broker
+      - zipkin
+    networks:
+      - service
+
+networks:
+  service:
+

@@ -10,7 +10,6 @@ import com.service.team.model.Team;
 import com.service.team.repo.PlayerSummaryRepo;
 import com.service.team.repo.TeamRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TeamService {
 
-    private final JdbcTemplate jdbcTemplate;
     private final TeamRepo teamRepo;
     private final PlayerSummaryRepo playerSummaryRepo;
     private final KafkaTemplate<Long, TeamResponse> kafkaTemplate;

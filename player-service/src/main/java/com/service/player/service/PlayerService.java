@@ -7,6 +7,8 @@ import com.service.player.exceptions.PlayerNotFound;
 import com.service.player.model.Player;
 import com.service.player.model.Team;
 import com.service.player.repo.PlayerRepo;
+
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ public class PlayerService {
 
     private final PlayerRepo playerRepo;
     private final KafkaTemplate<Long, TeamRequest> kafkaTemplate;
+
 
     public List<Player> getAllPlayers(){
         return playerRepo.findAll();
@@ -67,24 +70,19 @@ public class PlayerService {
     }
 
     public String requestTeam(Player player, Team team){
-        try {
-            TeamRequest newRequest = new TeamRequest();
-            if(team.getPlayersNeeded() > 0){
+        TeamRequest newRequest = new TeamRequest();
 
-                newRequest.setUserId(player.getUserId());
-                newRequest.setUserName(player.getUserName());
-                newRequest.setRole(player.getPreferredRole());
-                newRequest.setTeam(team);
-                kafkaTemplate.send("teamRequest", newRequest);
+        if(team.getPlayersNeeded() > 0){
+            newRequest.setUserId(player.getUserId());
+            newRequest.setUserName(player.getUserName());
+            newRequest.setRole(player.getPreferredRole());
+            newRequest.setTeam(team);
+            kafkaTemplate.send("teamRequest", newRequest);
+            return "Request Sent!";
+        }else{
+            return "Requested Team of " + team.getTeamName() + " does not need more players";
+        }
 
-                return "Request Sent!";
-            }else{
-                return "Requested Team of " + team.getTeamName() + " does not need more players";
-            }
-        }
-        catch(RuntimeException ex){
-            return "Request Already been sent to Team!";
-        }
     }
 
     public String addToTeam(TeamResponse teamResponse){

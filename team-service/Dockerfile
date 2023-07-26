@@ -1,5 +1,5 @@
 FROM openjdk:17
 
-COPY target/*.jar team.jar
+COPY target/ /target/
 
-ENTRYPOINT ["java","-jar","/team.jar"]
+ENTRYPOINT ["java","-jar","/target/team-service-1.0-SNAPSHOT.jar"]
