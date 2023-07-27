@@ -48,7 +48,7 @@ public class TeamController {
     }
 
 
-    @KafkaListener(topics = "teamRequest")
+    @KafkaListener(topics = "teamRequest", containerFactory = "factory")
     public void handleTeamRequest(TeamRequest teamRequest)  {
         teamService.saveRequest(teamRequest);
     }

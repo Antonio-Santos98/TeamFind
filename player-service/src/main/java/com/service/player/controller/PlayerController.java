@@ -57,7 +57,7 @@ public class PlayerController {
         return CompletableFuture.supplyAsync(() -> playerService.requestTeam(requestPlay, team));
     }
 
-    @KafkaListener(topics = "teamResponse")
+    @KafkaListener(topics = "teamResponse", containerFactory = "factory")
     public void handleResponse(TeamResponse teamResponse){
        playerService.addToTeam(teamResponse);
     }
