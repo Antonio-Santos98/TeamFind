@@ -22,7 +22,8 @@ public class SecurityConfig {
             configuration.setAllowedHeaders(List.of("*"));
             return configuration;
         });
-        http.csrf().disable().authorizeExchange(exchange -> exchange.pathMatchers("/eureka/**")
+        http.csrf().disable().authorizeExchange(exchange -> exchange
+                        .pathMatchers("/eureka/**", "/auth/**")
                         .permitAll()
                         .anyExchange()
                         .authenticated())

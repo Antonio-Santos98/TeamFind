@@ -119,6 +119,20 @@ services:
     networks:
       - service
 
+  mySQLauth:
+    container_name: mySQL-auth
+    image: mysql
+    hostname: mySQLauth
+    environment:
+      MYSQL_DATABASE: user-service
+      MYSQL_ROOT_PASSWORD: 1234
+    ports:
+     - "3309:3306"
+    volumes:
+     - ./mysql_data_auth:/var/lib/mysql
+    networks:
+      - service
+
   ## GateWay
   api-gateway:
     container_name: api-gateway
@@ -132,9 +146,11 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
       - SPRING.ZIPKIN.BASE-URL=http://zipkin:9411/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mySQL-auth:3306/user-service
     depends_on:
       - keycloak
       - discovery-server
+      - mySQLauth
       - zipkin
     networks:
       - service
