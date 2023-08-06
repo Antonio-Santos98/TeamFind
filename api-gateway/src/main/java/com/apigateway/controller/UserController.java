@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -16,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> userLogin(@RequestBody User user){
+    public ResponseEntity<?> userLogin(@RequestBody User user) throws IOException, URISyntaxException {
         return new ResponseEntity<>(
             userService.login(user),
             HttpStatus.ACCEPTED
