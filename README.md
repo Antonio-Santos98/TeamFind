@@ -10,7 +10,6 @@ Welcome to the TeamFind Microservices Project! This Java-based project showcases
 - [Installation](#installation)
 - [Microservices Architecture](#microservices-architecture)
 - [Authentication with Keycloak](#authentication-with-keycloak)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Introduction
@@ -62,9 +61,6 @@ The project employs a microservices architecture, dividing functionality into in
 
 Keycloak is integrated to provide secure user authentication. Users can log in to receive JWT tokens, which they use to make authorized API calls.
 
-## Contributing
-
-Contributions are welcome! If you'd like to contribute, please open an issue or pull request in the repository. See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
 ## License
 
